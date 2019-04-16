@@ -6,24 +6,50 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Scanner;
 
 public class Test {
 
     public static void main(String[] args) {
 
+        Scanner reader = new Scanner(System. in);
+        System.out.println("Introduzca la url que quieras consultar: " );
+        String consulta = reader.next();
+
         try {
-            String data = readUrl("https://api.mercadolibre.com/sites/MLA/categories");
-            Category[] categories = new Gson().fromJson(data, Category[].class);
+            String data = readUrl(consulta);
+            Sites[] sites = new Gson().fromJson(data, Sites[].class);
+            int i=1;
+            for (Sites site : sites) {
+                System.out.println(i++ + ") " + site.getName());
+            }
+
+            System.out.println("Elija una opción: ");
+            String respuesta = reader.next();
+            String idSites = sites[Integer.parseInt(respuesta)-1].getId();
+
+            if(consulta.endsWith("/"))
+                consulta += idSites + "/categories";
+            else
+                consulta += "/" + idSites + "/categories";
+
+            String dataRespuesta = readUrl(consulta);
+            Category[] categories = new Gson().fromJson(dataRespuesta, Category[].class);
+
             for (Category category : categories) {
                 System.out.println(category.getName());
             }
+
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Ocurrio un error al traer las categorias.");
         }
 
 
+        reader.close();
+
     }
+
 
     private static String readUrl(String urlString) throws IOException {
 
