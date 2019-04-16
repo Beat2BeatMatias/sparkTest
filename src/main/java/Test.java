@@ -14,8 +14,8 @@ public class Test {
 
         Scanner reader = new Scanner(System. in);
         System.out.println("Introduzca la url que quieras consultar: " );
-        String consulta = reader.next();
-
+        String consulta = reader.nextLine();
+        consulta=consulta.replace(" ","");
         try {
             String data = readUrl(consulta);
             Sites[] sites = new Gson().fromJson(data, Sites[].class);
@@ -25,7 +25,7 @@ public class Test {
             }
 
             System.out.println("Elija una opción: ");
-            String respuesta = reader.next();
+            String respuesta = reader.nextLine();
             String idSites = sites[Integer.parseInt(respuesta)-1].getId();
 
             if(consulta.endsWith("/"))
